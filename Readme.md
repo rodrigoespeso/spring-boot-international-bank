@@ -3,7 +3,7 @@
 ### Development Guide & Notes
 
 · Step 0. Analysis; Database model design; research about money transfers and currency conversion; write this guide.  
-· Step 1: Create a Maven project with [Spring Initializr](https://start.spring.io/) adding the necessary dependencies:  
+· Step 1: Create a Maven project with [Spring Initializr](https://start.spring.io/) adding the necessary dependencies  
     + Spring Boot DevTools  
     + Spring Web  
     + Spring Data JPA  
@@ -11,7 +11,7 @@
 · Step 2: Import to Eclipse IDE and run it.  
 · Step 3: Configure the project with a new GitHub repository; first commit.  
 · Step 4: Define the architecture creating the package structure (Controller, Service, Repository, VO).  
-· Step 5: Include the embedded DB (H2).  
+· Step 5: Create entity classes; include the embedded DB (H2) and 'data.sql'.    
 · Step 6: Define REST services and necessary methods in all classes; also create the exception classes.  
 · Step 7: Development of the 'transfer' service.  
 · Step 8: Development of the 'craete', 'find' and 'access' services.  
