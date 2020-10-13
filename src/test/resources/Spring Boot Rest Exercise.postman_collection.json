@@ -1,0 +1,126 @@
+{
+	"info": {
+		"_postman_id": "e601afa0-46c6-41e4-8c3f-4fa2d80f186a",
+		"name": "Spring Boot Rest Exercise",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "find",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/account/find/B",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"find",
+						"B"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "access",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"B\",\n    \"currency\": \"EUR\",\n    \"balance\": 1000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/account/access/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"access",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/account/transfer/?currencyCode=EUR&issuer=B&receiver=A&amount=20",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"transfer",
+						""
+					],
+					"query": [
+						{
+							"key": "currencyCode",
+							"value": "EUR"
+						},
+						{
+							"key": "issuer",
+							"value": "B"
+						},
+						{
+							"key": "receiver",
+							"value": "A"
+						},
+						{
+							"key": "amount",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"F\",\n    \"currency\": \"EUR\",\n    \"balance\": 560,\n    \"treasury\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/account/create/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"create",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

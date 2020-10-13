@@ -2,6 +2,7 @@ package com.rodrigoespeso.spbre.controller;
 
 import java.math.BigDecimal;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -13,6 +14,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +25,8 @@ import com.rodrigoespeso.spbre.service.AccountService;
 import com.rodrigoespeso.spbre.service.exception.BusinessException;
 import com.rodrigoespeso.spbre.service.exception.BusinessLogicException;
 import com.rodrigoespeso.spbre.service.exception.BusinessNotFoundException;
+import com.rodrigoespeso.spbre.service.vo.AccountAccessVO;
+import com.rodrigoespeso.spbre.service.vo.AccountVO;
 
 @Validated
 @RestController
@@ -32,18 +37,30 @@ public class AccountController {
 	private AccountService service;
 	
 	@GetMapping("/find/{name}")
-	public String findAccount(@PathVariable String name) {
-		return "Found account";
+	public AccountVO findAccount(@PathVariable @NotEmpty String name) {
+		try {
+			return service.findAccountByName(name);
+		} catch (BusinessException e) {
+			throw handledException(e);
+		}
 	}
 	
 	@PostMapping("create/")
-	public String create(String provInput) {
-		return "New account created";
+	public String create(@RequestBody @Valid AccountVO input) {
+		try {
+			return service.create(input);
+		} catch (BusinessException e) {
+			throw handledException(e);
+		}
 	}
 	
-	@PostMapping("access/")
-	public String access(String provInput) {
-		return "Account modified";
+	@PutMapping("access/")
+	public String access(@RequestBody @Valid AccountAccessVO input) {
+		try {
+			return service.access(input);
+		} catch (BusinessException e) {
+			throw handledException(e);
+		}
 	}
 	
 	@PostMapping("transfer/")

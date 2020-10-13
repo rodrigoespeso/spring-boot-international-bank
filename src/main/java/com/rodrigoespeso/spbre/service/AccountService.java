@@ -12,14 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.rodrigoespeso.spbre.model.entity.AccountEntity;
+import com.rodrigoespeso.spbre.model.entity.TmCurrencyEntity;
 import com.rodrigoespeso.spbre.model.repository.AccountRepository;
 import com.rodrigoespeso.spbre.model.repository.TmCurrencyRepository;
 import com.rodrigoespeso.spbre.service.exception.BusinessException;
 import com.rodrigoespeso.spbre.service.exception.BusinessLogicException;
 import com.rodrigoespeso.spbre.service.exception.BusinessNotFoundException;
+import com.rodrigoespeso.spbre.service.vo.AccountAccessVO;
+import com.rodrigoespeso.spbre.service.vo.AccountVO;
 
 @Service
 public class AccountService {
@@ -32,16 +34,37 @@ public class AccountService {
 	@Autowired
 	private TmCurrencyRepository currencyRepo;
 	
-	public String findAccountByName(@PathVariable String name) {
-		return "Found account";
+	
+	public AccountVO findAccountByName(String name) throws BusinessNotFoundException {
+		AccountEntity e = repo.findByName(name)
+				.orElseThrow(() -> new BusinessNotFoundException("The account '"+name+"'not exists."));
+		return fromEntityToVO(e);
 	}
 	
-	public String create(String provInput) {
-		return "New account created";
+	@Transactional(rollbackOn = Exception.class)
+	public String create(AccountVO input) throws BusinessLogicException {
+		AccountEntity e = fromVOToEntity(input);
+		checkTreasuryBalance(e);
+		repo.save(e);
+		return "Created account with id " + e.getId();
 	}
 	
-	public String access(String provInput) {
-		return "Account modified";
+	@Transactional(rollbackOn = Exception.class)
+	public String access(AccountAccessVO input) throws BusinessException {
+		AccountEntity e = repo.findByName(input.getName())
+				.orElseThrow(() -> new BusinessNotFoundException("The account '"+input.getName()+"'not exists."));
+		TmCurrencyEntity c = currencyRepo.findByCode(input.getCurrency())
+				.orElseThrow(() -> new BusinessNotFoundException("Currency Not Found."));
+		
+		e.setCurrency(c);
+		e.setBalance(input.getBalance());
+		
+		checkTreasuryBalance(e);
+		
+		repo.save(e);
+
+		return "Changed account '" + e.getName() + "'.";
+		
 	}
 	
 	/**
@@ -176,6 +199,31 @@ public class AccountService {
 		
 		repo.save(issuerEntity);
 		repo.save(receiverEntity);
+	}
+
+	/*
+	 * Private converters:
+	 */
+	
+	private AccountVO fromEntityToVO(AccountEntity e) {
+		AccountVO vo = new AccountVO();
+		vo.setName(e.getName());
+		vo.setCurrency(e.getCurrency().getCode());
+		vo.setBalance(e.getBalance());
+		vo.setTreasury(e.getTreasury());
+		return vo;
+	}
+
+	private AccountEntity fromVOToEntity(AccountVO vo) throws BusinessLogicException {
+		TmCurrencyEntity c = currencyRepo.findByCode(vo.getCurrency())
+				.orElseThrow(() -> new BusinessLogicException("Currency Not Found."));
+	
+		AccountEntity e = new AccountEntity();
+		e.setName(vo.getName());
+		e.setCurrency(c);
+		e.setBalance(vo.getBalance());
+		e.setTreasury(vo.getTreasury());
+		return e;
 	}
 	
 }
