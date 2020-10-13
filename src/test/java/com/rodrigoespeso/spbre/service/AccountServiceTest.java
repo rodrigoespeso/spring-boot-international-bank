@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -44,11 +45,12 @@ public class AccountServiceTest {
 		// Given
 		AccountEntity a = new AccountEntity();
 		a.setName("Z");
+		
 		// When
 		when(repo.findById(any())).thenReturn(Optional.of(a));
 		
 		// Then
-		assertEquals("Z", service.transfer("A", "B", "EUR", "amount"));
+		assertEquals("Z", service.transfer("A", "B", "EUR", BigDecimal.ONE));
 	}
 	
 }
