@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,4 +98,63 @@ public class AccountServiceTest {
 		assertTrue(service.transfer("A", "B", "EUR", BigDecimal.ONE).startsWith("NATIONAL OPERATION:"));
 	}
 	
+	@Test (expected = BusinessException.class)
+	public void transfer_whenTransferFailBecauseOfTreasuryProperty_thenThrowBusinessException() throws BusinessException {
+		// Given
+		TmCurrencyEntity c = new TmCurrencyEntity();
+		c.setCode("EUR");
+		c.setId(BigDecimal.ONE);
+		c.setName("Euro");
+		AccountEntity issuer = new AccountEntity();
+		issuer.setName("A");
+		issuer.setBalance(new BigDecimal(100));
+		issuer.setCurrency(c);;
+		issuer.setId(BigDecimal.ONE);
+		issuer.setTreasury(false);
+		AccountEntity receiver = new AccountEntity();
+		receiver.setName("B");
+		receiver.setBalance(new BigDecimal(900));
+		receiver.setCurrency(c);;
+		receiver.setId(new BigDecimal(2));
+		receiver.setTreasury(false);
+		
+		// When
+		when(currencyRepo.findByCode(any())).thenReturn(Optional.of(c));
+		when(repo.findByName("A")).thenReturn(Optional.of(issuer));
+		when(repo.findByName("B")).thenReturn(Optional.of(receiver));
+		
+		// Then
+		service.transfer("A", "B", "EUR", new BigDecimal(150));
+	}
+	
+	@Test
+	@Ignore
+	public void transfer_whenCorrectDataForAInternationalTransferIsGiven_thenReturnMessage() throws BusinessException {
+		// Given
+		TmCurrencyEntity c = new TmCurrencyEntity();
+		c.setCode("USD");
+		c.setId(BigDecimal.ONE);
+		c.setName("Euro");
+		AccountEntity issuer = new AccountEntity();
+		issuer.setName("A");
+		issuer.setBalance(new BigDecimal(100));
+		issuer.setCurrency(c);;
+		issuer.setId(BigDecimal.ONE);
+		issuer.setTreasury(false);
+		AccountEntity receiver = new AccountEntity();
+		receiver.setName("B");
+		receiver.setBalance(new BigDecimal(900));
+		receiver.setCurrency(c);;
+		receiver.setId(new BigDecimal(2));
+		receiver.setTreasury(false);
+		
+		
+		// When
+		when(currencyRepo.findByCode(any())).thenReturn(Optional.of(c));
+		when(repo.findByName("A")).thenReturn(Optional.of(issuer));
+		when(repo.findByName("B")).thenReturn(Optional.of(receiver));
+		
+		// Then
+		assertTrue(service.transfer("A", "B", "EUR", BigDecimal.ONE).startsWith("INTERNATIONAL OPERATION:"));
+	}
 }

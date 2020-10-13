@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
+import javax.money.convert.CurrencyConversion;
+import javax.money.convert.MonetaryConversions;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -65,7 +67,7 @@ public class AccountService {
 	 * @return Message explaining the process
 	 * @throws BusinessException If something is going wrong
 	 */
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public String transfer(String issuer, String receiver, String currencyCode, BigDecimal amount) throws BusinessException {
 		// Validations
 		if(amount.compareTo(BigDecimal.ZERO)<0)
@@ -98,7 +100,7 @@ public class AccountService {
 		
 		if(nationalOperation) {
 			outMsg.append("NATIONAL OPERATION:").append("\n");
-			outMsg.append("Tranfer ammount: ").append(amountMA.toString()).append("\n");
+			outMsg.append("Transfer ammount: ").append(amountMA.toString()).append("\n");
 			outMsg.append("Issuer balance pre-transfer: ").append(issuerMA.toString()).append("\n");
 			outMsg.append("Receiver balance pre-transfer: ").append(receiverMA.toString()).append("\n");
 		
@@ -109,13 +111,71 @@ public class AccountService {
 			subOutMsg.append("Issuer balance post-transfer: ").append(issuerMA.toString()).append("\n");
 			subOutMsg.append("Receiver balance post-transfer: ").append(receiverMA.toString()).append("\n");
 			
-//			check treasury property and save the updated entities
+			// Check treasury property and save the updated entities
+			checkAndSave(issuerEntity, receiverEntity, issuerMA, receiverMA);
 			
 			LOGGER.info(subOutMsg.toString());
 			outMsg.append(subOutMsg);
+		}else {
+			// Define conversions
+			LOGGER.info("INTERNATIONAL OPERATION: (it will take a little while...)");
+			CurrencyConversion issuerConverter = MonetaryConversions.getExchangeRateProvider()
+					.getCurrencyConversion(issuerCurrency);
+			CurrencyConversion receiverConverter = MonetaryConversions.getExchangeRateProvider()
+					.getCurrencyConversion(receiverCurrency);
+			
+			LOGGER.info("Issuer balance pre-transfer: {}", issuerMA.toString());
+			LOGGER.info("Receiver balance pre-transfer: {}", receiverMA.toString());
+			
+			outMsg.append("INTERNATIONAL OPERATION:").append("\n");
+			outMsg.append("Transfer amount: ").append(amountMA.toString()).append("\n");
+			outMsg.append("Issuer balance pre-transfer: ").append(issuerMA.toString()).append("\n");
+			outMsg.append("Receiver balance pre-transfer:" ).append(receiverMA.toString()).append("\n");
+			
+			// Prepare subtraction
+			MonetaryAmount toSub = amountMA.with(issuerConverter);
+			LOGGER.info("Transfer amount in issuer currency {}", toSub.toString());
+			
+			// Subtract to the issuer
+			issuerMA = issuerMA.subtract(toSub);
+			LOGGER.info("Issuer balance post-transfer: {}", issuerMA.toString());
+
+			// Prepare addition
+			MonetaryAmount toAdd = amountMA.with(receiverConverter);
+			LOGGER.info("Transfer amount in receiver currency {}", toSub.toString());
+			
+			// Subtract to the issuer
+			receiverMA = receiverMA.add(toAdd);
+			LOGGER.info("Receiver balance post-transfer: {}", issuerMA.toString());
+
+			// Check treasury property and save the updated entities
+			checkAndSave(issuerEntity, receiverEntity, issuerMA, receiverMA);
+			
+			outMsg.append("Issuer balance post-transfer: ").append(issuerMA.toString()).append("\n");
+			outMsg.append("Receiver balance post-transfer: ").append(receiverMA.toString()).append("\n");
 		}
 		
 		return outMsg.toString();
+	}
+
+	private void checkTreasuryBalance(AccountEntity a) throws BusinessLogicException {
+		if(!a.getTreasury().booleanValue() && BigDecimal.ZERO.compareTo(a.getBalance())>0)
+			throw new BusinessLogicException("'"+a.getName()+"': This type of account cannot have negative balance.");
+	}
+
+	private void checkAndSave(AccountEntity issuerEntity, AccountEntity receiverEntity, MonetaryAmount issuerMA,
+			MonetaryAmount receiverMA) throws BusinessLogicException {
+		BigDecimal newIssuerBalance = issuerMA.getNumber().numberValue(BigDecimal.class);
+		BigDecimal newReceiverBalance = receiverMA.getNumber().numberValue(BigDecimal.class);
+		
+		issuerEntity.setBalance(newIssuerBalance);
+		receiverEntity.setBalance(newReceiverBalance);
+		
+		checkTreasuryBalance(issuerEntity);
+		checkTreasuryBalance(receiverEntity);
+		
+		repo.save(issuerEntity);
+		repo.save(receiverEntity);
 	}
 	
 }
