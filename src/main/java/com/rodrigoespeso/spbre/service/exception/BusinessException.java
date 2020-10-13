@@ -1,6 +1,6 @@
 package com.rodrigoespeso.spbre.service.exception;
 
-public class BusinessException extends RuntimeException{
+public class BusinessException extends Exception{
 
 	private static final long serialVersionUID = -3288332723476680611L;
 
