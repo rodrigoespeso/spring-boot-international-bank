@@ -18,6 +18,7 @@
 · Step 9: Include REST validations.  
 · Step 10: Development of JUnit tests.  
 · Step 11: Development of component test; include a Postman project with all the requests.  
+· Step 12: Feel Free :)
 
 ### Interesting info for development
 
