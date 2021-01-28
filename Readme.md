@@ -1,5 +1,7 @@
 # Spring Boot Rest Exercise
 
+This is a Spring Boot development exercise that I did (actually still working on it) encouraged by some recruiter seeking for new employees.  
+
 ### Development Guide & Notes
 
 · Step 0. Analysis; Database model design; research about money transfers and currency conversion; write this guide.  
