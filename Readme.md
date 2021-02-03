@@ -16,7 +16,7 @@ This is a Spring Boot development exercise that I did (actually still working on
 · Step 5: Create entity classes; include the embedded DB (H2) and 'data.sql'.    
 · Step 6: Define REST services and necessary methods in all classes; also create the exception classes.  
 · Step 7: Development of the 'transfer' service.  
-· Step 8: Development of the 'craete', 'find' and 'access' services.  
+· Step 8: Development of the 'create', 'find' and 'access' services.  
 · Step 9: Include REST validations.  
 · Step 10: Development of JUnit tests.  
 · Step 11: Development of component test; include a Postman project with all the requests.  
