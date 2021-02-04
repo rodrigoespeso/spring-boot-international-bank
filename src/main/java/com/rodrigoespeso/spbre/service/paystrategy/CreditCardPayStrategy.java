@@ -1,6 +1,6 @@
-package com.rodrigoespeso.spbre.service.vo;
+package com.rodrigoespeso.spbre.service.paystrategy;
 
-public class CreditCardStrategy implements OldWayPaymentStrategy{
+public class CreditCardPayStrategy implements OldWayPayStrategy{
     @Override
     public double pay(double amount) {
 		double serviceCharge = 5.00;

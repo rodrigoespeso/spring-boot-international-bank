@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,38 +38,38 @@ public class AccountController {
 	private AccountService service;
 	
 	@GetMapping("/find/{name}")
-	public AccountVO findAccount(@PathVariable @NotEmpty String name) {
+	public ResponseEntity<AccountVO> findAccount(@PathVariable @NotEmpty String name) {
 		try {
-			return service.findAccountByName(name);
+			return ResponseEntity.ok(service.findAccountByName(name));
 		} catch (BusinessException e) {
 			throw handledException(e);
 		}
 	}
 	
-	@PostMapping("create/")
-	public String create(@RequestBody @Valid AccountVO input) {
+	@PostMapping(path = "create/")
+	public ResponseEntity<String> create(@RequestBody @Valid AccountVO input) {
 		try {
-			return service.create(input);
+			return ResponseEntity.ok(service.create(input));
 		} catch (BusinessException e) {
 			throw handledException(e);
 		}
 	}
 	
 	@PutMapping("access/")
-	public String access(@RequestBody @Valid AccountAccessVO input) {
+	public ResponseEntity<String> access(@RequestBody @Valid AccountAccessVO input) {
 		try {
-			return service.access(input);
+			return ResponseEntity.ok(service.access(input));
 		} catch (BusinessException e) {
 			throw handledException(e);
 		}
 	}
 	
 	@PostMapping("transfer/")
-	public String transfer(@RequestParam @NotEmpty String issuer, @RequestParam @NotEmpty String receiver,
+	public ResponseEntity<String> transfer(@RequestParam @NotEmpty String issuer, @RequestParam @NotEmpty String receiver,
 			@RequestParam @NotEmpty @Size(min = 3, max = 3) String currencyCode,
 			@Positive @NotNull @RequestParam BigDecimal amount) {
 		try {
-			return service.transfer(issuer, receiver, currencyCode, amount);
+			return ResponseEntity.ok(service.transfer(issuer, receiver, currencyCode, amount));
 		} catch (BusinessException e) {
 			throw handledException(e);
 		}

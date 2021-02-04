@@ -108,7 +108,7 @@ public class AccountServiceTest {
 		AccountEntity issuer = new AccountEntity();
 		issuer.setName("A");
 		issuer.setBalance(new BigDecimal(100));
-		issuer.setCurrency(c);;
+		issuer.setCurrency(c);
 		issuer.setId(BigDecimal.ONE);
 		issuer.setTreasury(false);
 		AccountEntity receiver = new AccountEntity();
@@ -138,7 +138,7 @@ public class AccountServiceTest {
 		AccountEntity issuer = new AccountEntity();
 		issuer.setName("A");
 		issuer.setBalance(new BigDecimal(100));
-		issuer.setCurrency(c);;
+		issuer.setCurrency(c);
 		issuer.setId(BigDecimal.ONE);
 		issuer.setTreasury(false);
 		AccountEntity receiver = new AccountEntity();

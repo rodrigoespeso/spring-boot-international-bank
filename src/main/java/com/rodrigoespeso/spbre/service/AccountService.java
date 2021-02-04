@@ -84,7 +84,7 @@ public class AccountService {
 	 * 
 	 * @param issuer The account name which makes the operation
 	 * @param receiver The receiver account name
-	 * @param currencyCode The currency of the money o be transfered
+	 * @param currencyCode The currency of the money to be transfered
 	 * @param amount The amount of money
 	 * 
 	 * @return Message explaining the process
@@ -210,7 +210,7 @@ public class AccountService {
 		vo.setName(e.getName());
 		vo.setCurrency(e.getCurrency().getCode());
 		vo.setBalance(e.getBalance());
-		vo.setTreasury(e.getTreasury());
+		vo.setIsTreasury(e.getTreasury());
 		return vo;
 	}
 
@@ -222,7 +222,7 @@ public class AccountService {
 		e.setName(vo.getName());
 		e.setCurrency(c);
 		e.setBalance(vo.getBalance());
-		e.setTreasury(vo.getTreasury());
+		e.setTreasury(vo.getIsTreasury());
 		return e;
 	}
 	

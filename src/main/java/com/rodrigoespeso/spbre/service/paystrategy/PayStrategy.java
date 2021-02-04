@@ -1,17 +1,17 @@
-package com.rodrigoespeso.spbre.service.vo;
+package com.rodrigoespeso.spbre.service.paystrategy;
 
-public interface PaymentStrategy {
+public interface PayStrategy {
 
 	final double SERVICECHARGE = 5.00;
 	final double CREDITCARDFEE = 10.00;
 	
 	double pay(double amount);
 
-	static PaymentStrategy payInCash() {
+	static PayStrategy payInCash() {
 		return amount -> SERVICECHARGE;
 	}
 
-	static PaymentStrategy payByCredit() {
+	static PayStrategy payByCredit() {
 		return amount -> SERVICECHARGE + CREDITCARDFEE;
 	}
 }

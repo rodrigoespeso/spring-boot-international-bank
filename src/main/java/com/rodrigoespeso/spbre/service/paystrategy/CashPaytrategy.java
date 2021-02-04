@@ -1,6 +1,6 @@
-package com.rodrigoespeso.spbre.service.vo;
+package com.rodrigoespeso.spbre.service.paystrategy;
 
-public class CashPaymentStrategy implements OldWayPaymentStrategy{
+public class CashPaytrategy implements OldWayPayStrategy{
     @Override
     public double pay(double amount) {
         double serviceCharge = 5.00;

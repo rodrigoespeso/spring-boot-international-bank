@@ -19,7 +19,7 @@ public class AccountVO {
 	private BigDecimal balance;
 	
 	@NotNull
-	private Boolean treasury;
+	private Boolean isTreasury;
 
 	public String getName() {
 		return name;
@@ -45,12 +45,12 @@ public class AccountVO {
 		this.balance = balance;
 	}
 
-	public Boolean getTreasury() {
-		return treasury;
+	public Boolean getIsTreasury() {
+		return isTreasury;
 	}
 
-	public void setTreasury(Boolean treasury) {
-		this.treasury = treasury;
+	public void setIsTreasury(Boolean isTreasury) {
+		this.isTreasury = isTreasury;
 	}
 	
 	
