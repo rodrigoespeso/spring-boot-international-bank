@@ -34,7 +34,6 @@ import com.rodrigoespeso.spbre.service.vo.AccountVO;
 @RequestMapping("/account")
 public class AccountController {
 
-	@Autowired
 	private AccountService service;
 	
 	@GetMapping("/find/{name}")

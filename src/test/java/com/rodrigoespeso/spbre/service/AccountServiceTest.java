@@ -22,6 +22,9 @@ import com.rodrigoespeso.spbre.model.repository.AccountRepository;
 import com.rodrigoespeso.spbre.model.repository.TmCurrencyRepository;
 import com.rodrigoespeso.spbre.service.exception.BusinessException;
 
+/**
+ * Test con JUnit + Mocckito
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AccountServiceTest {
 	
