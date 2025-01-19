@@ -34,6 +34,9 @@ public class AccountService {
 	@Autowired
 	private TmCurrencyRepository currencyRepo;
 	
+	@Autowired
+	private AuditProducer auditProducer;
+
 	
 	public AccountVO findAccountByName(String name) throws BusinessNotFoundException {
 		AccountEntity e = repo.findByName(name)
@@ -177,6 +180,13 @@ public class AccountService {
 			outMsg.append("Issuer balance post-transfer: ").append(issuerMA.toString()).append("\n");
 			outMsg.append("Receiver balance post-transfer: ").append(receiverMA.toString()).append("\n");
 		}
+		
+	    // Crear mensaje de auditoría
+	    String auditMessage = String.format("Transfer completed: %s -> %s | Amount: %s %s",
+	            issuer, receiver, amount, currencyCode);
+
+	    // Enviar mensaje al tópico Kafka
+	    auditProducer.sendMessage("transfer-audit", auditMessage);
 		
 		return outMsg.toString();
 	}
